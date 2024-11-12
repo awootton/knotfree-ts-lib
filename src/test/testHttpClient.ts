@@ -1,7 +1,7 @@
 import {assert} from 'chai';
 
-import * as http from '../httpClient'
-import * as types from '../Types'
+import * as knothttp from '../httpClient'
+import * as types from '../types'
 
 // npx tsx src/test/testHttpClient.ts
 
@@ -21,7 +21,7 @@ var config: types.ServerConfigList = {
     ]
 }
 
-var gadget = http.startHttpProxy(config,"localhost",8085)
+var gadget = knothttp.startHttpProxy(config,"localhost",8085)
 
 setTimeout(doTheRest, 1000)
 

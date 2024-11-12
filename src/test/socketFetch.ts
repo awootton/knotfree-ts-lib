@@ -1,6 +1,6 @@
 
 import * as client from '../client'
-import * as http from '../httpClient'
+import * as knothttp from '../httpClient'
 import * as fs from 'fs'
 import * as utils from '../utils'
 
@@ -75,7 +75,7 @@ console.log(`Character for hex 30 is: ${char}`);
 console.log(Buffer.from('666561', 'hex').toString('utf-8')) // fea or 4074
 
 // the last 30 is zero followed by 0d0a0d0a.
-let pos = http.parseHttp(Buffer.from(failedToParseGhostChunkedGet))
+let pos = knothttp.parseHttp(Buffer.from(failedToParseGhostChunkedGet))
 if ( pos !== failedToParseGhostChunkedGet.length ){
     console.log(" error parsed", pos, failedToParseGhostChunkedGet.length)
 }

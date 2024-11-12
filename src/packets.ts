@@ -58,7 +58,7 @@ export class Universal {
     }
 }
 
-// MakeUniversal is a convenience function to make a Universal Class from an Object
+// MakeUniversal is a convenience function to make a Universal Class from a js Object
 export function MakeUniversal(value: any): Universal {
     var p = value as Universal
     return new Universal(p.commandType, p.data)

@@ -36,6 +36,10 @@ export function startTestTopicWatcher(myUpdateTestTopic: (arg: packets.Universal
     }
 
     packer.onPacket = (packer: client.Packetizer, u: packets.Universal) => {
+        if (!u) {
+            console.log("ERROR: sent onPacket an undefined?")
+            return
+        }
         const u2 = new packets.Universal(u.commandType, u.data)
         // console.log("node has packet", u2.toString())
         myUpdateTestTopic(u)

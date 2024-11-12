@@ -1,10 +1,14 @@
 export * as utils from './utils'
-export * as types from './Types'
-export * as tokenutil from './AccessTokenPageUtil'
+export * as types from './types'
+export * as subscriber from "./startPacketSubscription"
+export * as packets from "./packets"
+export * as knothttp from './httpClient'
+export * as base64 from './TypescriptBase64'
 
 export {getFreeToken} from './AccessTokenPageUtil'
 
-// I don't get how this works yet.
+
+// This is supposed to work.
 export function ignoreThisFunction(x: number, y: number): number {
     return x + y;
 }

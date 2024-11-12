@@ -33,7 +33,7 @@ export type ConnectInfo = {
     onMessage: (msg: Uint8Array) => any,
     verbose?: boolean,
     verboseRaw?: boolean,
-
+    connected:boolean,
     write: (msg: Uint8Array, logMessage: string) => any
 }
 
@@ -46,6 +46,7 @@ export const defaultConnectInfo: ConnectInfo = {
     onMessage: (msg: Uint8Array) => { console.log("override msg please", msg.toString()) },
     verbose: false,
     verboseRaw: false,
+    connected:false,
     write: (msg: Uint8Array) => { }
 }
 
@@ -141,9 +142,7 @@ export function NewDefaultPacketizer(): Packetizer {
         }
     }
 
-    let connected = false
     function onConnectFunction(packer: Packetizer) {
-        connected = true
         console.log("NewDefaultPacketizer connected")
         // needs to send a connect packet
         let connect = packets.MakeConnect()
@@ -155,7 +154,7 @@ export function NewDefaultPacketizer(): Packetizer {
         packer.doSubscriptions(packer)
     }
     function doSubscriptionsFunction(packer: Packetizer) {
-        if (!connected) {
+        if (!packer.restarter.connectInfo.connected) {
             return
         }
         let i = 1
@@ -206,8 +205,7 @@ export function Startup(params: ConnectInfo) {
     };
 
     params.private_client_not_for_use = net.createConnection(options, () => {
-        // isConnected = true;
-        console.log("private_client_not_for_use connected")
+        // console.log("private_client_not_for_use connected")
     });
 
     // we only write whole packets so we can setNoDelay.
@@ -217,7 +215,10 @@ export function Startup(params: ConnectInfo) {
     console.log("Startup", params.host, params.port)
     // params.private_client_not_for_use.connect(params.port, params.host)
 
-    params.private_client_not_for_use.on('connect', params.onConnect)
+    params.private_client_not_for_use.on('connect', () =>{
+        params.connected = true
+        params.onConnect()}
+    )
 
     params.private_client_not_for_use.on('error', (err:any) => {
         console.log('Client: error: ' + err.message)
@@ -229,6 +230,7 @@ export function Startup(params: ConnectInfo) {
         }
         let err2 = new Error("Client: close: " + b)
         params.private_client_not_for_use.destroy(err2)
+        params.connected = false
         params.onDisconnect(err2)
     })
 

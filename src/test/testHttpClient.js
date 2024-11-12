@@ -1,5 +1,5 @@
 import assert from 'assert/strict';
-import * as http from '../knotprotocol/httpClient';
+import * as knothttp from '../knotprotocol/httpClient';
 // npx tsx src/test/testHttpClient.ts
 const token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjExMDU1NDMsImlzcyI6Il85c2giLCJqdGkiOiJkdmF3M3oyOG84Ynhxc3E2ZndvengzaHgiLCJpbiI6MTIxNiwib3V0IjoxMjE2LCJzdSI6NjQsImNvIjozMiwidXJsIjoia25vdGZyZWUuaW8vbXF0dCIsInB1YmsiOiJORVVkWlhzUFRELWx4R2VlSFdYRy1vXzl3bGZuX3NCU3FQcVVxekEwSFMwIn0.KLo0z6Rqw9kTGheINSAToGWIa2EdcblyVDmFetlVZ4rrlCtYYg3d9K_sHmaAtbBWiJv-UfUbpQ0mr88XNqZyDQ";
 // This will require that knotfree is running and that the py server in knotfree-help-content is runnign.
@@ -15,7 +15,7 @@ var config = {
         }
     ]
 };
-var gadget = http.startHttpProxy(config, "localhost", 8085);
+var gadget = knothttp.startHttpProxy(config, "localhost", 8085);
 setTimeout(doTheRest, 1000);
 function doTheRest() {
     // now, do a get to localhost 4321

@@ -3,7 +3,6 @@ import { Buffer } from 'buffer'
 
 export { }
 
-
 // The Base64Url encoding
 const b64ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 

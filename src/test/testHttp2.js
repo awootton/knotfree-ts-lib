@@ -71,9 +71,9 @@ console.log("---   ---   ---   ---   ---   ---   -   ");
 console.log("---   ---   ---   ---   ---   ---    ");
 console.log("part 3   ---   ---   ---   ---    ");
 // now let's actually do the tests
-import * as h from '../knotprotocol/httpClient';
+import * as knothttp from '../knotprotocol/httpClient';
 import * as packets from '../knotprotocol/packets';
-const httpMon = h.NewDefaultHttpMonger();
+const httpMon = knothttp.NewDefaultHttpMonger();
 var messagesReceivedCount = 0;
 var messageReceived = '';
 httpMon.onMessage = (httpMon, got) => {

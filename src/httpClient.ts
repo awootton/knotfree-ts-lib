@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 
 import * as client from './client'
 import * as packets from './packets'
-import * as types from './Types'
+import * as types from './types'
 import * as utils from './utils'
 
 
@@ -13,9 +13,10 @@ export type httpClientGadget = {
 }
 
 // only call this once ever, on the creation of the window.
-export const startHttpProxy = (config: types.ServerConfigList, host: string, port: number): httpClientGadget => {
+export const startHttpProxy = (config: types.ServerConfigList, host: string, port: number,
+    myUpdateLog: (arg: packets.Universal) => void | undefined): httpClientGadget => {
 
-    console.log("startTestHttpProxy called with config")
+    console.log("startTestHttpProxy called with config", myUpdateLog)
     // map of hashed name b64 to config item
     let hashedNameToConfigItem: { [key: string]: types.ServerConfigItem } = {}
 
@@ -37,21 +38,19 @@ export const startHttpProxy = (config: types.ServerConfigList, host: string, por
             hashedNameToConfigItem[utils.toBase64Url(hashedName)] = item
         }
     }
-    // function subscribeToNewTopics(newConfig: types.ServerConfigList) {
-    //     // unsubscribe from the old subs list? 
-    //     for (let item of newConfig.items) {
-    //         let sub = packets.MakeSubscribe()
-    //         sub.Address = { Type: ' ', Bytes: Buffer.from(item.name) }
-    //         // sub.optionalKeyValues.set('debg',Buffer.from("12345678")) // causes debg logging in the knotfree server
-    //         http.packer.write(sub)
-    //         console.log("subscribeToNewTopics subscribing to", item.name)
-    //     }
-    // }
     haveNewConfig(config)
     // the doSubscriptions function happens on connect
 
+    const oldPackerOnPacket = http.packer.onPacket
+
+    http.packer.onPacket = (packer: client.Packetizer, u: packets.Universal) => {
+        myUpdateLog(u)
+        oldPackerOnPacket(packer, u)
+    }
+    
     http.onMessage = (http: HttpMonger, got: Buffer, send: packets.Send) => {
         // console.log("got http message", packets.Asciiizer(got,256))
+        myUpdateLog(send.toBackingUniversal())
         // we want the Type and the Path. eg GET /details.md
         let logMsg = ''
         if (http.packer.restarter.connectInfo.verbose) {
@@ -64,9 +63,9 @@ export const startHttpProxy = (config: types.ServerConfigList, host: string, por
         let item = hashedNameToConfigItem[utils.toBase64Url(b)]
         if (item) {
             // send it to a socket and wait for a response.
-            let rep = NewDefaultReplyMonger(http,send)
+            let rep = NewDefaultReplyMonger(http, send)
             // rep.send = send
-            rep.connectInfo.host = item.host?item.host:"localhost"
+            rep.connectInfo.host = item.host ? item.host : "localhost"
             rep.connectInfo.port = item.port
 
             client.Startup(rep.connectInfo)
@@ -107,8 +106,7 @@ export const startHttpProxy = (config: types.ServerConfigList, host: string, por
 
     // re-subscribe to topics every 18 min to keep the connection alive
     setInterval(() => {
-        // subscribeToNewTopics(config)
-        http.packer.doSubscriptions(http.packer)
+            http.packer.doSubscriptions(http.packer)
 
     }, 18 * 60 * 1000)
 
@@ -145,7 +143,7 @@ export function NewDefaultHttpMonger(): HttpMonger {
     var buffer = Buffer.alloc(0)
     http.packer.onPacket = (packer: client.Packetizer, u: packets.Universal) => {
 
-        if (! u) {
+        if (!u) {
             console.log("ERROR http onPacket no packet") // kinda fatal
             return
         }
@@ -167,7 +165,14 @@ export function NewDefaultHttpMonger(): HttpMonger {
             return
         }
         buffer = Buffer.concat([buffer, Buffer.from(send.Payload)])
-
+        // if not buffer starts with a http method then return. TODO: regex? something fancy?
+        const httpMethods = ["GET ", "POST ", "PUT ", "DELETE ", "HEAD ", "OPTIONS ", "PATCH ","CONNECT ","TRACE "];
+        const bufferStr = buffer.toString();
+        const startsWithHttpMethod = httpMethods.some(method => bufferStr.startsWith(method));
+        if (!startsWithHttpMethod) {
+            buffer = buffer.subarray(0,0)
+            return; 
+        }
         while (true) {
             let contentEndIndex = parseHttp(buffer) // returns -1 if not ready
             if (contentEndIndex < 0) {
@@ -331,7 +336,7 @@ export type ReplyMonger = {
     send: packets.Send
 }
 
-export function NewDefaultReplyMonger( httpMonger: HttpMonger, send: packets.Send): ReplyMonger {
+export function NewDefaultReplyMonger(httpMonger: HttpMonger, send: packets.Send): ReplyMonger {
     let monger: ReplyMonger = {
         connectInfo: {
             ...client.defaultConnectInfo,

@@ -83,13 +83,13 @@ console.log("---   ---   ---   ---   ---   ---    ")
 console.log("part 3   ---   ---   ---   ---    ")
 
 // now let's actually do the tests
-import * as h from '../httpClient'
+import * as knothttp from '../httpClient'
 import * as packets from '../packets'
 
-const httpMon = h.NewDefaultHttpMonger()
+const httpMon = knothttp.NewDefaultHttpMonger()
 var messagesReceivedCount = 0
 var messageReceived = ''
-httpMon.onMessage = (httpMon: h.HttpMonger, got: Buffer) => {
+httpMon.onMessage = (httpMon: knothttp.HttpMonger, got: Buffer) => {
     console.log("httpMon.onMessage: ", got.toString().length)
     // we want to send this to the server by TCP
     messagesReceivedCount++

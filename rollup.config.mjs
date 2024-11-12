@@ -3,24 +3,25 @@ import typescript from '@rollup/plugin-typescript';
 import dts from "rollup-plugin-dts";
 const config = [
   {
-    input: 'build/compiled/index.js',
-    //input: 'dist/index.js',
+    input: 'dist/index.js',
     output: {
-      file: 'build/compiled/knotfree-ts-lib.js',
+      file: 'dist/knotfree-ts-lib.js',
       format: 'cjs',
       sourcemap: true,
     },
     external: ['tweetnacl-ts','fast-sha256','net' ],
-    plugins: [typescript()]
+    plugins: [typescript()],
+    external: ['buffer','tweetnacl-ts','fast-sha256','net' ],
   }, {
-    input: 'build/compiled/index.d.ts',
-    // input: 'dist/index.d.ts',
+    input: 'dist/index.d.ts',
     output: {
-      file: 'build/compiled/knotfree-ts-lib.d.ts',
+      file: 'dist/knotfree-ts-lib.d.ts',
       format: 'es'
     },
-    plugins: [dts()]
-  }
+    plugins: [dts()],
+    
+  },
+  
 ];
 export default config;
 

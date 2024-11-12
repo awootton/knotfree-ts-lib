@@ -1,9 +1,9 @@
 
 import * as nacl from 'tweetnacl-ts'
 import { Buffer } from 'buffer'
-import * as b64 from "./TypescriptBase64"
+import * as base64 from "./TypescriptBase64"
 import sha256 from "fast-sha256";
-import * as types from "./Types";
+import * as types from "./types";
 
 
 // KnotNameHash must match exactly what KnotFree does to topics.
@@ -66,8 +66,6 @@ export function StartHeartbeatTimer() {
     }, 30 * 1000)
 }
 
-
-
 export function Sha256Hash(str: string): Uint8Array {
     const data = Buffer.from(str)
     return sha256(data)
@@ -115,13 +113,13 @@ export function GetPayloadFromToken(token: string): [types.KnotFreeTokenPayload,
 
 // base64 convert base64 encode base64
 export function toBase64Url(buf: Buffer): string {
-    const result: string = b64.encode(buf)
+    const result: string = base64.encode(buf)
     // const lll = result.length 32 to 43
     return result
 }
 
 export function fromBase64Url(str: string): Buffer {
-    const buf: Buffer = b64.decode(str)
+    const buf: Buffer = base64.decode(str)
     //const lll = buf.length // 43 to 32
     return buf
 }
