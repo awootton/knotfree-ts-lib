@@ -9,7 +9,6 @@ import * as utils from './utils'
 export type httpClientGadget = {
     httpMonger: HttpMonger,
     haveNewConfig: (newConfig: types.ServerConfigList) => any,
-    // subscribeToNewTopics: (newConfig: types.ServerConfigList) => any
 }
 
 // only call this once ever, on the creation of the window.
@@ -37,6 +36,9 @@ export const startHttpProxy = (config: types.ServerConfigList, host: string, por
             const hashedName = utils.KnotNameHash2Buffer(item.name)
             hashedNameToConfigItem[utils.toBase64Url(hashedName)] = item
         }
+        // also force reconnect
+        if (http.packer.restarter.connectInfo.connected) 
+            http.packer.restarter.connectInfo.private_client_not_for_use.destroy()
     }
     haveNewConfig(config)
     // the doSubscriptions function happens on connect

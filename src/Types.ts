@@ -1,10 +1,8 @@
 
-// import * as saved from './SavedStuff'
-
-
+// for the hosters
 export type ServerConfigItem = {
     name: string,
-     // in binary. 24 high bits of the sha256 of the name. Must match what knotfree does.
+    // in binary. 24 high bits of the sha256 of the name. Must match what knotfree does.
     // hashedName: Buffer,
 
     port: number, // for forwarding http
@@ -12,40 +10,44 @@ export type ServerConfigItem = {
     // passphrase?: string[], // for encrypting an api we don't have yet
     // admin?: string[], // for encrypting an and api we don't have yet
     host?: string // when it's not localhost
-  }
-  
-  export const EmptyServerConfigItem : ServerConfigItem = {
+}
+
+export const EmptyServerConfigItem: ServerConfigItem = {
     name: "",
     // hashedName: Buffer.from(""),
     // nameReservationToken: "",
     port: 0, // for forwarding http
     // directory: "", // where the data lives
-   // passphrase: [],
-    host : "localhost"
-  }
-  
-  
-  export type ServerConfigList = {
+    // passphrase: [],
+    host: "localhost"
+}
+
+
+export type ServerConfigList = {
     token: string // for accessing knotfree,
+    ownerPublicKey: string
+    ownerPrivateKey: string
     items: ServerConfigItem[]
-  }
-  
-  export var EmptyServerConfigList: ServerConfigList = {
+}
+
+export var EmptyServerConfigList: ServerConfigList = {
     token: "default-config-token-needs-replacing",
+    ownerPublicKey: "",
+    ownerPrivateKey: "",
     items: []
-  }
-  
-  export var serverConfigList: ServerConfigList = EmptyServerConfigList
-  
-  export function  GetName2Config( name: string ) : ServerConfigItem {
+}
+
+export var serverConfigList: ServerConfigList = EmptyServerConfigList
+
+export function GetName2Config(name: string): ServerConfigItem {
     for (let item of serverConfigList.items) {
-       if ( item.name === name ){
-          return item
-       }
+        if (item.name === name) {
+            return item
+        }
     }
     return EmptyServerConfigItem
-  }
-  
+}
+
 // export type RequestCallbackType = (arg0: PublishReply) => void
 // export const EmptyRequestCallbackType: RequestCallbackType = (arg0: PublishReply) => { }
 
@@ -136,7 +138,7 @@ export function getExternalName(aName: string, nameType: string): string {
 }
 
 export let knotfreeApiPublicKey = ""
-export function SetKnotfreeApiPublicKey( k : string) {
+export function SetKnotfreeApiPublicKey(k: string) {
     knotfreeApiPublicKey = k
 }
 

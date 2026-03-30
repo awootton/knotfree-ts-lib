@@ -7,7 +7,7 @@ import * as utils from './utils'
 
 function getSampleKnotFreeTokenPayload(): KnotFreeTokenPayload {
   var res: KnotFreeTokenPayload = {
-    exp: 60*60*24*30, //`json:"exp,omitempty"` // ExpirationTimeunix seconds
+    exp: 60 * 60 * 24 * 30, //`json:"exp,omitempty"` // ExpirationTimeunix seconds
     iss: "xxx", //`json:"iss"`           // Issuer first 4 bytes (or more) of base64 public key of issuer
     jti: "xxx", //`json:"jti,omitempty"` // JWTID a unique serial number for this Issuer
 
@@ -61,23 +61,23 @@ function getSampleKnotFreeTokenRequest(): TokenRequest {
 
 
 export function getFreeToken(prefix: string, serverName: string, done: (ok: boolean, tok: string) => any,
-usersPublicKey :string,usersPrivateKey:string ) {
-   
+  usersPublicKey: string, usersPrivateKey: string) {
+
   var hoststr = prefix + serverName + "api1/getToken"
 
   //console.log("it's fetch time again ... for a Token !!", hoststr)
   var data = getSampleKnotFreeTokenRequest()
   const myKeyPair: nacl.BoxKeyPair = nacl.box_keyPair()
-  // let config = allMgr.GetGlobalConfig()
- // if (config.usersPublicKey !== undefined && config.usersPublicKey.length !== 0) {
+ 
+  if (usersPublicKey && usersPublicKey.length !== 0) {
     myKeyPair.publicKey = utils.fromBase64Url(usersPublicKey)
-    myKeyPair.secretKey = utils.fromBase64Url(usersPrivateKey )
- // }
+    myKeyPair.secretKey = utils.fromBase64Url(usersPrivateKey)
+  }
 
   // arg!! wants hex ! data.pkey =  base64url.encode(Buffer.from(keyPair.publicKey))
   data.pubk = utils.toBase64Url(Buffer.from(myKeyPair.publicKey))
   console.log("AppUtil getFreeToken ", hoststr, JSON.stringify(data))
-  const response = fetch(hoststr, { method: 'POST', body: JSON.stringify(data) }); // , { mode: "no-cors" });
+  const response = fetch(hoststr, { method: 'POST', body: JSON.stringify(data), mode:  'cors'  }); // , { mode: "no-cors" });
   response.then((resp: Response) => {
     console.log("have get free token response ", resp)
     if (resp.ok) {

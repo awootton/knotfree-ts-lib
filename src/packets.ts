@@ -44,7 +44,7 @@ export class Universal {
             if (isAscii(d)) {
                 s += " " + Buffer.from(d).toString('utf8')
             } else {
-                if (i < 2 && d.length == 25 && d[0] === 0) { // a binary address
+                if (i < 2 && d.length === 25 && d[0] === 0) { // a binary address
                     let tmp = Buffer.from(d.subarray(1)).toString('base64')
                     tmp = tmp.replace(/=/g, '')
                     s += " =" + tmp
@@ -165,6 +165,9 @@ export function MakeConnect() {
     return p
 }
 export function FillConnect(u: Universal): Connect | undefined{
+    if ( ! u ){
+        return undefined
+    }
     if (u.commandType != "C") {
         return undefined
     }
@@ -211,7 +214,13 @@ export function MakeSubscribe(): Subscribe {
     return p
 }
 export function FillSubscribe(u: Universal): Subscribe | undefined{
+    if ( ! u ){
+        return undefined
+    }
     if (u.commandType != "S") {
+        return undefined
+    }
+    if (u.data.length < 1) {
         return undefined
     }
     let p: Subscribe = MakeSubscribe()
@@ -255,7 +264,13 @@ export function MakeSend(): Send {
     return p
 }
 export function FillSend(u: Universal): Send | undefined{
+    if ( ! u ){
+        return undefined
+    }
     if (u.commandType != "P") {
+        return undefined
+    }
+    if (u.data.length < 3) {
         return undefined
     }
     let p: Send = MakeSend()
@@ -293,6 +308,9 @@ export function MakeLookup(): Lookup {
     return p
 }
 export function FillLookup(u: Universal): Lookup | undefined{
+    if ( ! u ){
+        return undefined
+    }
     if (u.commandType != "L") {
         return undefined
     }
@@ -346,7 +364,7 @@ function fillOptions(options: Map<string, Uint8Array>, data: Uint8Array[], offse
 // is it better to just alloc the bytes?
 function AddressToBytes(address: AddressUnion): Buffer {
 
-    if (address.Type == ' ') { // Utf8Address {
+    if (address.Type === ' ') { // Utf8Address {
         return Buffer.from(address.Bytes)
     }
     return Buffer.concat([Buffer.from(address.Type), Buffer.from(address.Bytes)])
@@ -374,22 +392,22 @@ function AddressFromBytes(bytes: Uint8Array): AddressUnion {
     }
     let first = bytes.subarray(0, 1).toString() // AddressType(bytes[0])
     let more = bytes.subarray(1)
-    if (first == BinaryAddress && more.length == 24) {
+    if (first === BinaryAddress && more.length === 24) {
         a.Type = BinaryAddress
         a.Bytes = more
         return a
     }
-    if (first == HexAddress && more.length == 48) {
+    if (first === HexAddress && more.length === 48) {
         a.Type = HexAddress
         a.Bytes = more
         return a
     }
-    if (first == Base64Address && more.length == 32) {
+    if (first === Base64Address && more.length === 32) {
         a.Type = Base64Address
         a.Bytes = more
         return a
     }
-    if (first == Utf8Address) {
+    if (first === Utf8Address) {
         a.Type = Utf8Address
         a.Bytes = more
         return a

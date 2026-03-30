@@ -2,6 +2,7 @@ import {assert} from 'chai';
 
 import * as knothttp from '../httpClient'
 import * as types from '../types'
+import * as packets from '../packets'
 
 // npx tsx src/test/testHttpClient.ts
 
@@ -11,6 +12,8 @@ const token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjExMDU1NDMsImlz
 // check with http://localhost:4321/images/knot128cropped.png
 var config: types.ServerConfigList = {
     token: token,
+    ownerPublicKey: "",
+    ownerPrivateKey: "",
     items: [
         {
             name: "knotfree-help-content",
@@ -21,7 +24,7 @@ var config: types.ServerConfigList = {
     ]
 }
 
-var gadget = knothttp.startHttpProxy(config,"localhost",8085)
+var gadget = knothttp.startHttpProxy(config,"localhost",8085,(arg: packets.Universal)=>{})
 
 setTimeout(doTheRest, 1000)
 

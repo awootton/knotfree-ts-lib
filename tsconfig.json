@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "node", // "bundler?",// "node",
     "removeComments": false,
     "sourceMap": true,
     "target": "esnext",
@@ -10,10 +10,12 @@
     "module": "esnext",
     "noEmitOnError": true,
     "lib": [
-      "es2017"
+      "es2017","dom"
     ],
     "esModuleInterop": false,
+    "jsx": "react"
   },
+  
   "include": [
     "src"
   ]
