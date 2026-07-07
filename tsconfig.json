@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "node", // "bundler?",// "node",
     "removeComments": false,
     "sourceMap": true,
     "target": "esnext",
     "outDir": "dist",
+    "rootDir": "./src",
     "declaration": true,
     "strict": true,
     "module": "esnext",

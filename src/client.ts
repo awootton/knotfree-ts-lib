@@ -1,17 +1,3 @@
-// Copyright 2024,2025 Alan Tracey Wootton
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Buffer } from 'buffer' // for stinky react native 
 
@@ -128,7 +114,9 @@ export function NewDefaultPacketizer(): Packetizer {
     packer.restarter.onMessage = (r: Restarter, msg: Uint8Array) => {
         buffer = Buffer.concat([buffer, Buffer.from(msg)])
         let u: packets.Universal | undefined
-        [u, buffer] = packets.FromBuffer(buffer)
+        let newbuffer: Buffer
+        [u, newbuffer] = packets.FromBuffer(buffer)  // will trim the buffer if it gets a full packet, otherwise u will be undefined and the buffer will be unchanged
+        buffer = Buffer.from(newbuffer)
         // unmarshal the packet
 
         if (u) {
@@ -212,7 +200,7 @@ export function Startup(params: ConnectInfo) {
     params.private_client_not_for_use.setNoDelay(true)
     // params.client.setKeepAlive(true)
 
-    console.log("Startup", params.host, params.port)
+    console.log("Startup starting with", params.host, params.port)
     // params.private_client_not_for_use.connect(params.port, params.host)
 
     params.private_client_not_for_use.on('connect', () =>{
@@ -293,3 +281,18 @@ export function Startup(params: ConnectInfo) {
     }
 
 }
+
+// Copyright 2024,2025 Alan Tracey Wootton
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.

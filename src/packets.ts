@@ -110,9 +110,9 @@ export function FromBuffer(buffer: Buffer): [u: Universal|undefined, b: Buffer] 
 export function ToBytes(u: Universal): Buffer {
     let bytes = Buffer.from(u.commandType.substring(0, 1))
     const size = u.data.length
-    bytes = writeVarLenInt(size, bytes)
+    bytes = Buffer.from(writeVarLenInt(size, bytes))
     for (let a of u.data) {
-        bytes = writeVarLenInt(a.length, bytes)
+        bytes = Buffer.from(writeVarLenInt(a.length, bytes))
     }
     for (let a of u.data) {
         bytes = Buffer.concat([bytes, Buffer.from(a)])
@@ -466,3 +466,17 @@ function ReadVarLenInt(buffer: Buffer, pos: number): [val: number, pos: number] 
 }
 
 
+// Copyright 2026 Alan Tracey Wootton
+// See LICENSE
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.

@@ -1,3 +1,4 @@
+
 import { Buffer } from 'buffer'
 
 import * as client from './client'
@@ -51,7 +52,8 @@ export const startHttpProxy = (config: types.ServerConfigList, host: string, por
     }
     
     http.onMessage = (http: HttpMonger, got: Buffer, send: packets.Send) => {
-        // console.log("got http message", packets.Asciiizer(got,256))
+        
+        console.log("got http message", packets.Asciiizer(got,256))
         myUpdateLog(send.toBackingUniversal())
         // we want the Type and the Path. eg GET /details.md
         let logMsg = ''
@@ -156,9 +158,9 @@ export function NewDefaultHttpMonger(): HttpMonger {
                 if (sub) {
                     let dom = sub.optionalKeyValues.get('local-hoster')
                     if (dom) {
-                        console.log("suback ", dom.toString())
+                        console.log("NewDefaultHttpMonger onPacket suback ", dom.toString())
                     } else {
-                        console.log("suback ", "unknown")
+                        console.log("NewDefaultHttpMonger onPacket suback ", "unknown")
                     }
                 } else {
                     console.log("http onPacket unknown packet", u.toString())
@@ -184,8 +186,12 @@ export function NewDefaultHttpMonger(): HttpMonger {
             // slice the http packet out of buffer 
             const theHttp = buffer.subarray(0, contentEndIndex)
             buffer = buffer.subarray(contentEndIndex)
-            //console.log("HttpMonger theHttp-->"+theHttp.toString()+"<----------")
-            //console.log("HttpMonger new buffer-->"+buffer.toString()+"<----------")
+            // do we need these?
+            console.log("HttpMonger packer.onPacket theHttp-->"+theHttp.toString()+"<----------")
+            // console.log("HttpMonger packer.onPacket new buffer-->"+buffer.toString()+"<----------")
+            // console.log("got http message", packets.Asciiizer(theHttp,256))
+            // console.log("HttpMonger new buffer", packets.Asciiizer(buffer,256))
+
             http.onMessage(http, theHttp, send)
         }
     }
@@ -370,3 +376,17 @@ export function NewDefaultReplyMonger(httpMonger: HttpMonger, send: packets.Send
 }
 
 
+// Copyright 2026 Alan Tracey Wootton
+// See LICENSE
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
